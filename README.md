@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/aOnurTheDev/sOnOs/releases"><img src="https://img.shields.io/badge/download-ISO-E53935?style=for-the-badge" alt="Download the ISO"></a>
+  <a href="https://github.com/sOn-Os/sOnOs/releases"><img src="https://img.shields.io/badge/download-ISO-E53935?style=for-the-badge" alt="Download the ISO"></a>
   <img src="https://img.shields.io/badge/status-beta-0B0909?style=for-the-badge" alt="Status: beta">
   <img src="https://img.shields.io/badge/base-Arch%20Linux-0B0909?style=for-the-badge" alt="Base: Arch Linux">
   <img src="https://img.shields.io/badge/license-GPL--2.0-0B0909?style=for-the-badge" alt="License: GPL-2.0">
@@ -18,7 +18,7 @@
 
 sOnOs installs a desktop with gaming support, the NVIDIA driver and, if you want them, complete development toolchains, on a plain Arch Linux that stays compatible with the official repositories and the AUR.
 
-This repository is the [archiso](https://gitlab.archlinux.org/archlinux/archiso) profile that builds the sOnOs live ISO. The installer, **soninstall**, lives in [sOnInstall](https://github.com/aOnurTheDev/sOnInstall).
+This repository is the [archiso](https://gitlab.archlinux.org/archlinux/archiso) profile that builds the sOnOs live ISO. The installer, **soninstall**, lives in [sOnInstall](https://github.com/sOn-Os/sOnInstall).
 
 ## Contents
 
@@ -33,7 +33,7 @@ This repository is the [archiso](https://gitlab.archlinux.org/archlinux/archiso)
 
 | Step | |
 |:---:|---|
-| **1** | Download the latest ISO from [Releases](https://github.com/aOnurTheDev/sOnOs/releases). |
+| **1** | Download the latest ISO from [Releases](https://github.com/sOn-Os/sOnOs/releases). |
 | **2** | Write it to a USB drive with Ventoy, balenaEtcher or `dd`. |
 | **3** | Boot from the USB drive. soninstall starts by itself. |
 | **4** | Answer nine questions, check the summary and confirm. |
@@ -117,7 +117,7 @@ Before you install anything, the same USB drive is a full rescue system:
 
 You need Arch Linux, or an Arch-based system, with `archiso` installed.
 
-1. Build the soninstall package repository with `packaging/local/build-repo.sh` from [sOnInstall](https://github.com/aOnurTheDev/sOnInstall):
+1. Build the soninstall package repository with `packaging/local/build-repo.sh` from [sOnInstall](https://github.com/sOn-Os/sOnInstall):
 
    ```shell
    packaging/local/build-repo.sh ~/sOnOs/repo
@@ -141,7 +141,7 @@ You need Arch Linux, or an Arch-based system, with `archiso` installed.
 
 ## Contributing
 
-sOnOs is in beta. Bug reports, feedback and pull requests are welcome; open an [issue](https://github.com/aOnurTheDev/sOnOs/issues) or a pull request. The installer is translated into more than 40 languages, and new translations are welcome in [sOnInstall](https://github.com/aOnurTheDev/sOnInstall).
+sOnOs is in beta. Bug reports, feedback and pull requests are welcome; open an [issue](https://github.com/sOn-Os/sOnOs/issues) or a pull request. The installer is translated into more than 40 languages, and new translations are welcome in [sOnInstall](https://github.com/sOn-Os/sOnInstall).
 
 <p align="center">
   <sub>sOnOs is distributed under the GPL-2.0 license. It is an independent distribution, not affiliated with the Arch Linux project.</sub>
