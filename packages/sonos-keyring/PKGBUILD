@@ -1,0 +1,41 @@
+# Maintainer: sOnOs <https://github.com/sOn-Os>
+#
+# The public keys that sign the [sonos] repository, in the layout of archlinux-keyring.
+# The three key files are written by scripts/publish-repo.sh from your signing key and are
+# meant to be committed: they hold public keys only. See docs/signing.md.
+
+pkgname=sonos-keyring
+# The day the keys last changed. Raise it whenever a key is added or revoked.
+pkgver=20261114
+pkgrel=1
+pkgdesc='sOnOs PGP keyring'
+arch=('any')
+url='https://github.com/sOn-Os/sOnOs'
+license=('GPL-2.0-only')
+install=sonos-keyring.install
+
+_keyfiles=(sonos.gpg sonos-trusted sonos-revoked)
+
+prepare() {
+	local file
+
+	for file in "${_keyfiles[@]}"; do
+		if [[ ! -f ${startdir}/${file} ]]; then
+			error '%s is missing: the signing key has not been exported yet. See docs/signing.md.' "${file}"
+			return 1
+		fi
+	done
+
+	if [[ ! -s ${startdir}/sonos.gpg || ! -s ${startdir}/sonos-trusted ]]; then
+		error 'sonos.gpg or sonos-trusted is empty. See docs/signing.md.'
+		return 1
+	fi
+}
+
+package() {
+	local file
+
+	for file in "${_keyfiles[@]}"; do
+		install -Dm644 "${startdir}/${file}" "${pkgdir}/usr/share/pacman/keyrings/${file}"
+	done
+}

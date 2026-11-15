@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/sOn-Os/sOnOs/releases"><img src="https://img.shields.io/badge/download-ISO-E53935?style=for-the-badge" alt="Download the ISO"></a>
+  <a href="https://son-os.github.io/#indir"><img src="https://img.shields.io/badge/download-ISO-E53935?style=for-the-badge" alt="Download the ISO"></a>
   <img src="https://img.shields.io/badge/status-beta-0B0909?style=for-the-badge" alt="Status: beta">
   <img src="https://img.shields.io/badge/base-Arch%20Linux-0B0909?style=for-the-badge" alt="Base: Arch Linux">
   <img src="https://img.shields.io/badge/license-GPL--2.0-0B0909?style=for-the-badge" alt="License: GPL-2.0">
@@ -23,33 +23,36 @@ This repository is the [archiso](https://gitlab.archlinux.org/archlinux/archiso)
 ## Contents
 
 - [Installing sOnOs](#installing-sonos)
+- [Verifying the download](#verifying-the-download)
 - [Nine questions](#nine-questions)
 - [What you get](#what-you-get)
 - [The live ISO](#the-live-iso)
 - [Building the ISO](#building-the-iso)
+- [Releasing](#releasing)
 - [Contributing](#contributing)
 
 ## Installing sOnOs
 
 | Step | |
 |:---:|---|
-| **1** | Download the latest ISO from [Releases](https://github.com/sOn-Os/sOnOs/releases). |
+| **1** | Download the ISO, see below. |
 | **2** | Write it to a USB drive with Ventoy, balenaEtcher or `dd`. |
 | **3** | Boot from the USB drive. soninstall starts by itself. |
 | **4** | Answer nine questions, check the summary and confirm. |
 
-<details>
-<summary>The ISO comes in parts</summary>
+The ISO is one file of about 3.1 GiB:
 
-GitHub limits release files to 2 GiB, so the ISO is split into parts named `sOnOs.iso.7z.001`, `sOnOs.iso.7z.002` and so on. Download every part into the same folder and extract the first one:
+| | |
+|---|---|
+| **SourceForge** | <https://sourceforge.net/projects/sonos/files/latest/download> |
+| **Google Drive** (mirror) | <https://drive.google.com/file/d/1EBfFsHg2rxhtojXgOF9z-vgoghwFCJsb/view> |
+| **Checksum and signature** | [the latest release](https://github.com/sOn-Os/sOnOs/releases/latest) |
 
-```shell
-7z x sOnOs.iso.7z.001
-```
+<!-- TODO(sOnOs): the SourceForge address above is a placeholder. Replace it with the real project address once the project exists. -->
+> [!NOTE]
+> **TODO:** the SourceForge project is not set up yet, so that link does not work for now. Use the Google Drive mirror.
 
-On Windows, right-click `sOnOs.iso.7z.001` and extract it with [7-Zip](https://www.7-zip.org).
-
-</details>
+GitHub limits release files to 2 GiB, so the ISO itself is not on the release page; the release has its checksum and signature. The same links are on [son-os.github.io](https://son-os.github.io/#indir).
 
 <details>
 <summary>Writing the USB drive with dd</summary>
@@ -64,6 +67,30 @@ sudo dd bs=4M if=sOnOs-x86_64.iso of=/dev/sdX status=progress oflag=sync
 
 > [!TIP]
 > No network cable? The installer offers to connect to Wi-Fi before it starts. You can also quit it, connect with `iwctl`, and run `soninstall` again.
+
+## Verifying the download
+
+Download `sOnOs-<version>-x86_64.iso.sha256` from [the latest release](https://github.com/sOn-Os/sOnOs/releases/latest) into the folder of the ISO and run:
+
+```shell
+sha256sum -c sOnOs-<version>-x86_64.iso.sha256
+```
+
+It prints `OK` when the download is intact. On Windows, `Get-FileHash sOnOs-<version>-x86_64.iso` in PowerShell prints the checksum to compare with the one in that file.
+
+The checksum catches a broken download. The signature also shows that the ISO comes from sOnOs:
+
+```shell
+curl -LO https://raw.githubusercontent.com/sOn-Os/sOnOs/master/packages/sonos-keyring/sonos.gpg
+gpg --import sonos.gpg
+gpg --verify sOnOs-<version>-x86_64.iso.sig sOnOs-<version>-x86_64.iso
+```
+
+`gpg` should say `Good signature` and print this fingerprint:
+
+```
+50DC 9400 E338 5CAB FF14  C9FF 7588 C65A 3E0D 5A36
+```
 
 ## Nine questions
 
@@ -115,33 +142,36 @@ Before you install anything, the same USB drive is a full rescue system:
 
 ## Building the ISO
 
-You need Arch Linux, or an Arch-based system, with `archiso` installed.
+You need Arch Linux, or an Arch-based system, with `archiso` and `base-devel` installed, and [sOnInstall](https://github.com/sOn-Os/sOnInstall) checked out next to this repository.
 
-1. Build the soninstall package repository with `packaging/local/build-repo.sh` from [sOnInstall](https://github.com/sOn-Os/sOnInstall):
+1. Build the local package repository the ISO installs `soninstall` from. It goes to `/var/tmp/sonos-repo`, the path in [pacman.build.conf](pacman.build.conf):
 
    ```shell
-   packaging/local/build-repo.sh ~/sOnOs/repo
+   scripts/build-local-repo.sh
    ```
 
-2. Point the `[sonos]` repository in [pacman.conf](pacman.conf) at that folder:
+   With the sOnInstall checkout somewhere else: `scripts/build-local-repo.sh -s <sOnInstall checkout>`.
 
-   ```ini
-   [sonos]
-   SigLevel = Optional TrustAll
-   Server = file:///home/you/sOnOs/repo
-   ```
-
-3. Build the ISO from this folder:
+2. Build the ISO from this folder:
 
    ```shell
    sudo mkarchiso -v -r -w /tmp/sonos-work -o out .
    ```
 
-   It is written to `out/`.
+   It is written to `out/`. The build needs about 20 GB of free disk space.
+
+`pacman.build.conf` is used only while building: it trusts that local folder without signatures. It is not the `pacman.conf` of the live ISO or of installed systems.
+
+The same build runs in GitHub Actions, see [build-iso.yml](.github/workflows/build-iso.yml): on a `v*` tag, or by hand from the Actions tab.
+
+## Releasing
+
+- [docs/RELEASE.md](docs/RELEASE.md): the release checklist.
+- [docs/signing.md](docs/signing.md): the signing key, the signed `[sonos]` package repository and the secrets the workflow can use.
 
 ## Contributing
 
-sOnOs is in beta. Bug reports, feedback and pull requests are welcome; open an [issue](https://github.com/sOn-Os/sOnOs/issues) or a pull request. The installer is translated into more than 40 languages, and new translations are welcome in [sOnInstall](https://github.com/sOn-Os/sOnInstall).
+sOnOs is in beta. Bug reports, feedback and pull requests are welcome; open an [issue](https://github.com/sOn-Os/sOnOs/issues) or a pull request, and ask questions in [Discussions](https://github.com/sOn-Os/sOnOs/discussions). The installer is translated into more than 40 languages, and new translations are welcome in [sOnInstall](https://github.com/sOn-Os/sOnInstall).
 
 <p align="center">
   <sub>sOnOs is distributed under the GPL-2.0 license. It is an independent distribution, not affiliated with the Arch Linux project.</sub>
