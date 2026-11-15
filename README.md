@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://son-os.github.io/#indir"><img src="https://img.shields.io/badge/download-ISO-E53935?style=for-the-badge" alt="Download the ISO"></a>
-  <img src="https://img.shields.io/badge/status-beta-0B0909?style=for-the-badge" alt="Status: beta">
+  <a href="https://github.com/sOn-Os/sOnOs/releases/latest"><img src="https://img.shields.io/github/v/release/sOn-Os/sOnOs?style=for-the-badge&label=release&color=0B0909" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/base-Arch%20Linux-0B0909?style=for-the-badge" alt="Base: Arch Linux">
   <img src="https://img.shields.io/badge/license-GPL--2.0-0B0909?style=for-the-badge" alt="License: GPL-2.0">
 </p>
@@ -171,7 +171,7 @@ The same build runs in GitHub Actions, see [build-iso.yml](.github/workflows/bui
 
 ## Contributing
 
-sOnOs is in beta. Bug reports, feedback and pull requests are welcome; open an [issue](https://github.com/sOn-Os/sOnOs/issues) or a pull request, and ask questions in [Discussions](https://github.com/sOn-Os/sOnOs/discussions). The installer is translated into more than 40 languages, and new translations are welcome in [sOnInstall](https://github.com/sOn-Os/sOnInstall).
+Bug reports, feedback and pull requests are welcome; open an [issue](https://github.com/sOn-Os/sOnOs/issues) or a pull request, and ask questions in [Discussions](https://github.com/sOn-Os/sOnOs/discussions). The installer is translated into more than 40 languages, and new translations are welcome in [sOnInstall](https://github.com/sOn-Os/sOnInstall).
 
 <p align="center">
   <sub>sOnOs is distributed under the GPL-2.0 license. It is an independent distribution, not affiliated with the Arch Linux project.</sub>
