@@ -4,8 +4,9 @@
 #   scripts/build-local-repo.sh [-s <sOnInstall checkout>] [<repository folder>]
 #
 # The repository folder defaults to /var/tmp/sonos-repo, the path in pacman.build.conf.
-# It holds soninstall, built by sOnInstall's packaging/local/build-repo.sh, and sonos-keyring
-# once the public signing key is in packages/sonos-keyring (see docs/signing.md).
+# It holds soninstall, built by sOnInstall's packaging/local/build-repo.sh, and the packages
+# in packages/; sonos-keyring only once the public signing key is in packages/sonos-keyring
+# (see docs/signing.md).
 #
 # Run it as a regular user: makepkg does not build as root, and uses sudo only to install
 # missing build dependencies.
@@ -42,11 +43,16 @@ REPO_DIR=$(cd "${1:-/var/tmp/sonos-repo}" && pwd)
 
 "$SONINSTALL_DIR/packaging/local/build-repo.sh" "$REPO_DIR"
 
-if [[ -s $KEYRING_DIR/sonos.gpg ]]; then
-	rm -f "$REPO_DIR"/sonos-keyring-*.pkg.tar.zst
-	(cd "$KEYRING_DIR" && PKGDEST=$REPO_DIR makepkg --force --clean --cleanbuild --noconfirm)
-	repo-add --quiet "$REPO_DIR/sonos.db.tar.gz" "$REPO_DIR"/sonos-keyring-*.pkg.tar.zst
-	echo "sonos-keyring is in the [sonos] repository at $REPO_DIR"
-else
-	echo 'sonos-keyring was not built: packages/sonos-keyring/sonos.gpg is not there yet (docs/signing.md)'
-fi
+for package_dir in "$ROOT"/packages/*/; do
+	name=$(basename "$package_dir")
+	if [[ $name == sonos-keyring && ! -s $KEYRING_DIR/sonos.gpg ]]; then
+		echo 'sonos-keyring was not built: packages/sonos-keyring/sonos.gpg is not there yet (docs/signing.md)'
+		continue
+	fi
+	rm -f "$REPO_DIR/$name"-[0-9]*.pkg.tar.zst
+	# These only install files and depend on each other, which a machine without [sonos]
+	# cannot resolve, so their dependencies are not checked
+	(cd "$package_dir" && PKGDEST=$REPO_DIR makepkg --nodeps --force --clean --cleanbuild --noconfirm)
+	repo-add --quiet "$REPO_DIR/sonos.db.tar.gz" "$REPO_DIR/$name"-[0-9]*.pkg.tar.zst
+	echo "$name is in the [sonos] repository at $REPO_DIR"
+done

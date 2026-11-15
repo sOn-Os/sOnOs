@@ -3,7 +3,8 @@
 #
 #   GPGKEY=<fingerprint> scripts/publish-repo.sh [-s <sOnInstall checkout>] [-o <output folder>]
 #
-# It builds soninstall (from the sOnInstall checkout) and sonos-keyring with "makepkg --sign",
+# It builds soninstall (from the sOnInstall checkout) and every package in packages/
+# (sonos-keyring, sonos-ananicy-rules, sonos-settings) with "makepkg --sign",
 # creates the repository database with "repo-add --sign", and leaves everything in
 # <output folder>/x86_64, laid out for https://son-os.github.io/repo/$arch.
 #
@@ -41,7 +42,7 @@ done
 (( EUID != 0 )) || die 'run this as a regular user, makepkg does not build packages as root'
 [[ -n ${GPGKEY:-} ]] || die 'set GPGKEY to the fingerprint of the signing key, see docs/signing.md'
 
-for tool in gpg makepkg repo-add; do
+for tool in git gpg makepkg repo-add; do
 	command -v "$tool" >/dev/null || die "$tool is not installed"
 done
 
@@ -79,12 +80,18 @@ trap cleanup EXIT
 mkdir -p "$WORK_DIR/packages"
 
 build() {
-	(cd "$1" && PKGDEST=$WORK_DIR/packages makepkg --sign --key "$FINGERPRINT" \
-		--syncdeps --force --clean --cleanbuild --noconfirm --needed)
+	local dir=$1
+	shift
+	(cd "$dir" && PKGDEST=$WORK_DIR/packages makepkg --sign --key "$FINGERPRINT" \
+		--force --clean --cleanbuild --noconfirm "$@")
 }
 
-build "$SONINSTALL_DIR/packaging/local"
-build "$KEYRING_DIR"
+build "$SONINSTALL_DIR/packaging/local" --syncdeps --needed
+# These only install files and depend on each other, which a build machine without
+# [sonos] cannot resolve, so their dependencies are not checked
+for package_dir in "$ROOT"/packages/*/; do
+	build "$package_dir" --nodeps
+done
 
 # The repository holds one build of each package: the new one
 STAGE_DIR=$OUT_DIR/$ARCH
