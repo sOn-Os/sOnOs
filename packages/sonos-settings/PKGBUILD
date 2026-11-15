@@ -1,0 +1,26 @@
+# Maintainer: sOnOs <https://github.com/sOn-Os>
+#
+# System tuning for sOnOs desktops, in the spirit of CachyOS's settings: process priorities
+# (ananicy-cpp), a desktop-oriented CPU scheduler (sched_ext, scx_lavd), I/O schedulers per
+# disk type, and memory settings for zram swap. The installer enables ananicy-cpp.service
+# and scx_loader.service; this package enables nothing by itself.
+
+pkgname=sonos-settings
+pkgver=20261115
+pkgrel=1
+pkgdesc='sOnOs system tuning: ananicy-cpp rules, sched_ext scheduler, I/O and memory settings'
+arch=('any')
+url='https://github.com/sOn-Os/sOnOs'
+license=('GPL-2.0-only')
+depends=('ananicy-cpp' 'sonos-ananicy-rules' 'scx-scheds' 'scx-tools')
+conflicts=('cachyos-settings')
+backup=('etc/scx_loader/config.toml')
+
+package() {
+	local files=${startdir}/files
+
+	install -Dm644 "${files}/70-sonos.conf" "${pkgdir}/usr/lib/sysctl.d/70-sonos.conf"
+	install -Dm644 "${files}/60-sonos-ioschedulers.rules" "${pkgdir}/usr/lib/udev/rules.d/60-sonos-ioschedulers.rules"
+	install -Dm644 "${files}/sonos-thp.conf" "${pkgdir}/usr/lib/tmpfiles.d/sonos-thp.conf"
+	install -Dm644 "${files}/scx_loader.toml" "${pkgdir}/etc/scx_loader/config.toml"
+}

@@ -1,0 +1,7 @@
+# I/O scheduler by disk type.
+# Hard disks: bfq, which keeps the desktop responsive during long reads and writes
+ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
+# SATA SSDs and eMMC: mq-deadline, low overhead with fair read latency
+ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
+# NVMe: kyber, made for fast multi-queue devices
+ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="kyber"

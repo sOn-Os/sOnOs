@@ -17,7 +17,7 @@ BUILD_HOME=/home/$BUILD_USER
 [[ -d $SONINSTALL_DIR/packaging/local ]] \
 	|| { echo "ci-build-iso: no sOnInstall checkout at $SONINSTALL_DIR" >&2; exit 1; }
 
-pacman -Syu --noconfirm --needed archiso base-devel sudo
+pacman -Syu --noconfirm --needed archiso base-devel git sudo
 
 # makepkg refuses to run as root, so the packages are built by a throwaway user on copies
 # of the checkouts: the mounted ones belong to the runner's user.
