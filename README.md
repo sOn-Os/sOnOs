@@ -155,10 +155,10 @@ You need Arch Linux, or an Arch-based system, with `archiso` and `base-devel` in
 2. Build the ISO from this folder:
 
    ```shell
-   sudo mkarchiso -v -r -w /tmp/sonos-work -o out .
+   sudo mkarchiso -v -r -w /var/tmp/sonos-work -o out .
    ```
 
-   It is written to `out/`. The build needs about 20 GB of free disk space.
+   It is written to `out/`. The build needs about 20 GB of free disk space in `/var/tmp`; `/tmp` is too small, it is kept in memory.
 
 `pacman.build.conf` is used only while building: it trusts that local folder without signatures. It is not the `pacman.conf` of the live ISO or of installed systems.
 
