@@ -89,10 +89,8 @@ gpg --verify sOnOs-<version>-x86_64.iso.sig sOnOs-<version>-x86_64.iso
 `gpg` should say `Good signature` and print this fingerprint:
 
 ```
-TODO: the signing key has not been created yet, so releases are not signed for now
+50DC 9400 E338 5CAB FF14  C9FF 7588 C65A 3E0D 5A36
 ```
-
-<!-- TODO(sOnOs): put the key's fingerprint above once it exists (docs/signing.md), and remove this note. -->
 
 ## Nine questions
 
