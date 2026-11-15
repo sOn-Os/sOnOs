@@ -18,6 +18,9 @@ Tag and build on the same day so they match.
 ### 1. Packages
 
 - [ ] sOnInstall's default branch has what the release should ship.
+- [ ] Packages in `packages/` that changed have a higher `pkgver` or `pkgrel`. For
+      `sonos-ananicy-rules`, update `_commit` to the newest commit of CachyOS/ananicy-rules
+      and `pkgver` to its date.
 - [ ] If the ISO uses the hosted `[sonos]` repository (branch `sonos-signed-repo` is merged):
       run `GPGKEY=<FINGERPRINT> scripts/publish-repo.sh`, push the result to `sOn-Os/repo`, and
       check that `https://son-os.github.io/repo/x86_64/sonos.db` answers. **This comes before
