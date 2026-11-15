@@ -18,6 +18,7 @@ mkinitcpio-nfs-utils
 # =====================================================================
 arch-install-scripts
 soninstall
+sonos-keyring
 efibootmgr
 edk2-shell
 grub
