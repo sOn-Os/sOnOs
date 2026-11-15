@@ -7,3 +7,4 @@
 /packages/*/pkg/
 *.pkg.tar.zst
 *.pkg.tar.zst.sig
+/packages/*/ananicy-rules/
