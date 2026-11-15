@@ -1,0 +1,6 @@
+# Started by scx_loader.service at boot. scx_lavd is a sched_ext CPU scheduler made for
+# games and interactive desktops; the kernel's own scheduler takes over if it stops.
+# Other schedulers: scx_bpfland, scx_rusty, scx_cosmos (see "pacman -Ql scx-scheds").
+# Switch at runtime with: scxctl switch --sched bpfland
+default_sched = "scx_lavd"
+default_mode = "Auto"
