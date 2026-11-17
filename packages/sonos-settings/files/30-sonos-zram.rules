@@ -1,0 +1,4 @@
+# When zram swap comes up: swap to it eagerly, since it is RAM and far faster than a disk,
+# and turn off zswap, which would compress the same pages a second time before zram.
+ACTION=="change", KERNEL=="zram0", ATTR{initstate}=="1", SYSCTL{vm.swappiness}="150", \
+    RUN+="/bin/sh -c 'echo N > /sys/module/zswap/parameters/enabled'"
