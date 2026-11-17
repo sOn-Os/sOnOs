@@ -1,26 +1,41 @@
 # Maintainer: sOnOs <https://github.com/sOn-Os>
 #
-# System tuning for sOnOs desktops, in the spirit of CachyOS's settings: process priorities
-# (ananicy-cpp), a desktop-oriented CPU scheduler (sched_ext, scx_lavd), I/O schedulers per
-# disk type, and memory settings for zram swap. The installer enables ananicy-cpp.service
-# and scx_loader.service; this package enables nothing by itself.
+# System tuning for sOnOs desktops, in the spirit of CachyOS and SteamOS:
+#   - CPU: process priorities (ananicy-cpp with CachyOS's rules) and the scx_lavd sched_ext
+#     scheduler, started by scx_loader
+#   - memory: zram as large as the RAM, zswap off while zram is used, swap and dirty-page
+#     settings for zram, transparent huge pages without stalls
+#   - disks: an I/O scheduler per disk type
+#   - games: no split-lock penalty, ntsync for Wine and Proton, faster NVIDIA allocations
+#   - network: BBR congestion control
+#   - system: shorter service stop timeout, a smaller journal
+# The installer enables ananicy-cpp.service and scx_loader.service; this package enables
+# nothing by itself. Every file can be overridden in /etc.
 
 pkgname=sonos-settings
-pkgver=20261115
+pkgver=20261117
 pkgrel=1
-pkgdesc='sOnOs system tuning: ananicy-cpp rules, sched_ext scheduler, I/O and memory settings'
+pkgdesc='sOnOs system tuning: CPU scheduling, memory, I/O, gaming and network settings'
 arch=('any')
 url='https://github.com/sOn-Os/sOnOs'
 license=('GPL-2.0-only')
 depends=('ananicy-cpp' 'sonos-ananicy-rules' 'scx-scheds' 'scx-tools')
+optdepends=('zram-generator: for the zram swap settings')
 conflicts=('cachyos-settings')
 backup=('etc/scx_loader/config.toml')
 
 package() {
 	local files=${startdir}/files
+	local lib=${pkgdir}/usr/lib
 
-	install -Dm644 "${files}/70-sonos.conf" "${pkgdir}/usr/lib/sysctl.d/70-sonos.conf"
-	install -Dm644 "${files}/60-sonos-ioschedulers.rules" "${pkgdir}/usr/lib/udev/rules.d/60-sonos-ioschedulers.rules"
-	install -Dm644 "${files}/sonos-thp.conf" "${pkgdir}/usr/lib/tmpfiles.d/sonos-thp.conf"
+	install -Dm644 "${files}/70-sonos.conf" "${lib}/sysctl.d/70-sonos.conf"
+	install -Dm644 "${files}/30-sonos-zram.rules" "${lib}/udev/rules.d/30-sonos-zram.rules"
+	install -Dm644 "${files}/60-sonos-ioschedulers.rules" "${lib}/udev/rules.d/60-sonos-ioschedulers.rules"
+	install -Dm644 "${files}/50-sonos-zram.conf" "${lib}/systemd/zram-generator.conf.d/50-sonos-zram.conf"
+	install -Dm644 "${files}/sonos-thp.conf" "${lib}/tmpfiles.d/sonos-thp.conf"
+	install -Dm644 "${files}/sonos-ntsync.conf" "${lib}/modules-load.d/sonos-ntsync.conf"
+	install -Dm644 "${files}/sonos-nvidia.conf" "${lib}/modprobe.d/sonos-nvidia.conf"
+	install -Dm644 "${files}/sonos-timeouts.conf" "${lib}/systemd/system.conf.d/50-sonos-timeouts.conf"
+	install -Dm644 "${files}/sonos-journal.conf" "${lib}/systemd/journald.conf.d/50-sonos-journal.conf"
 	install -Dm644 "${files}/scx_loader.toml" "${pkgdir}/etc/scx_loader/config.toml"
 }

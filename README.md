@@ -112,7 +112,7 @@ The installer continues in the chosen language, and the installed system gets it
 | | |
 |---|---|
 | **Gaming** | Steam, GameMode, and Vulkan drivers (64- and 32-bit) for the GPU in the machine |
-| **Performance** | Tuning in the style of CachyOS: ananicy-cpp with CachyOS's rules for about 360 programs, the `scx_lavd` sched_ext CPU scheduler, an I/O scheduler per disk type, and memory settings for zram swap ([sonos-settings](packages/sonos-settings)) |
+| **Performance** | Tuning in the style of CachyOS and SteamOS ([sonos-settings](packages/sonos-settings)): ananicy-cpp with CachyOS's rules for about 360 programs, the `scx_lavd` sched_ext CPU scheduler, zram as large as the RAM, an I/O scheduler per disk type, ntsync for Proton, no split-lock stutter, BBR networking |
 | **Desktop** | The environment you picked with its everyday apps, Firefox in your language, VLC, Blueman and pavucontrol |
 | **Tools** | zsh, Neovim, Vim, micro, Git, fastfetch, btop and 7-Zip, plus the hardware, disk and network tools of the live ISO |
 | **sOnOs** | The logo, wallpaper, `os-release` and fastfetch theme, kept across updates |
@@ -126,6 +126,7 @@ An installation takes about **7 GB**, or about **17 GB** with the development to
 - Another CPU scheduler: `scxctl switch --sched bpfland` (list them with `scxctl list`), or for good: `default_sched` in `/etc/scx_loader/config.toml`. Back to the kernel's scheduler: `sudo systemctl disable --now scx_loader`.
 - Process priorities: `sudo systemctl disable --now ananicy-cpp`. Your own rules go in `/etc/ananicy.d/`.
 - Memory settings: override any value in `/etc/sysctl.d/99-local.conf`.
+- zram size: `zram-size` in a file in `/etc/systemd/zram-generator.conf.d/`, e.g. `zram-size = ram / 2`.
 
 </details>
 
